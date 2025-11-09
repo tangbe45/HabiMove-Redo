@@ -85,24 +85,23 @@ body {
   background-color: var(--bg-page);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  overflow: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .page {
-  @apply w-full mx-auto py-2 overflow-y-auto;
+  @apply w-screen relative mx-auto py-2 h-[calc(100vh-48px)];
   min-height: 100vh;
 }
 
 .header {
-  @apply flex justify-between items-center py-2 mt-1 mb-2 max-w-7xl;
-  background-color: var(--bg-card);
+  @apply flex fixed right-0 dark:bg-gray-900 shadow-white shadow-xl dark:text-gray-400 dark:border-gray-700 left-0 top-12 justify-between items-center py-2 mb-2 max-w-7xl;
+
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.header h3 {
+.header h1 {
   @apply text-2xl font-bold m-0;
   color: var(--text-primary);
 }
