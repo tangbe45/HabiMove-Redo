@@ -23,17 +23,72 @@ model Property {
   bedrooms    Int
   bathrooms   Int
   hasInternalToilet Boolean
-  hasAGarage Boolean
-  hasAWell Boolean
+  hasParking Boolean
+  hasWell Boolean
   forRent Boolean
   forSale Boolean
   status      PropertyStatus @default(AVAILABLE)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relationships
+  regionId       String
+  divisionId     String
+  subdivisionId  String
+  neighborhoodId String
+  houseTypeId    String
+   
+
+  region       Region       @relation(fields: [regionId], references: [id])
+  division     Division     @relation(fields: [divisionId], references: [id])
+  subdivision  Subdivision  @relation(fields: [subdivisionId], references: [id])
+  neighborhood Neighborhood @relation(fields: [neighborhoodId], references: [id])
+  houseType    HouseType    @relation(fields: [houseTypeId], references: [id])
+  
 }
 enum PropertyStatus {
   AVAILABLE
   PENDING
   SOLD
   RENTED
+}
+
+model HouseType {
+  id      String    @id @default(cuid())
+  name    String    @unique
+  description String?
+  Property Property[]
+}
+
+model Region {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  divisions Division[]
+  Property   Property[]
+}
+
+model Division {
+  id           String        @id @default(cuid())
+  name         String
+  regionId     String
+  region       Region        @relation(fields: [regionId], references: [id])
+  subdivisions Subdivision[]
+  Property      Property[]
+}
+
+model Subdivision {
+  id            String         @id @default(cuid())
+  name          String
+  divisionId    String
+  division      Division       @relation(fields: [divisionId], references: [id])
+  neighborhoods Neighborhood[]
+  Property       Property[]
+}
+
+model Neighborhood {
+  id            String      @id @default(cuid())
+  name          String
+  subdivisionId String
+  subdivision   Subdivision @relation(fields: [subdivisionId], references: [id])
+  Property       Property[]
 }

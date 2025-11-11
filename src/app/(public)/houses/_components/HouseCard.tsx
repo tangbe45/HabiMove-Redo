@@ -18,7 +18,7 @@ export const HouseCard = ({ house }: HouseCardProps) => {
   return (
     <article
       aria-labelledby={`house-${house.id}-title`}
-      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+      className="group card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
     >
       {/* Thumbnail */}
       <div className="relative w-full h-56 overflow-hidden">

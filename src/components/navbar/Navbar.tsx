@@ -18,7 +18,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-slate-800 fixed left-0 right-0 top-0 w-full dark:bg-gray-900 dark:text-gray-400 dark:border-gray-700 md:z-50 z-40">
+    <nav className="top-nav fixed left-0 right-0 top-0 mx-auto w-full dark:bg-gray-900 dark:text-gray-400 dark:border-gray-700 md:z-50 z-40">
       <div className="max-w-7xl mx-auto p-sync">
         <div className="flex justify-between h-12 items-center">
           {/* Logo */}
@@ -32,7 +32,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-300 hover:text-indigo-600 transition-colors"
+                className="dark:text-gray-300 text-gray-300 hover:text-indigo-600 transition-colors"
               >
                 {item.name}
               </Link>
@@ -40,7 +40,7 @@ export default function Navbar() {
           </div>
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-300 hover:text-indigo-600"
+            className="md:hidden p-2 rounded-md text-gray-300  hover:text-indigo-600"
             onClick={toggleMenu}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
