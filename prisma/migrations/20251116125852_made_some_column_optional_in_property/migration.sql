@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Property" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "bedrooms" DROP NOT NULL,
+ALTER COLUMN "bathrooms" DROP NOT NULL,
+ALTER COLUMN "hasInternalToilet" DROP NOT NULL,
+ALTER COLUMN "hasParking" DROP NOT NULL,
+ALTER COLUMN "hasWell" DROP NOT NULL;

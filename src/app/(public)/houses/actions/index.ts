@@ -1,20 +1,69 @@
 "use server";
 
+import { Prisma, PropertyPurpose } from "@/generated/prisma";
 import { db } from "@/lib/db";
 import { HouseFilter } from "@/lib/types";
 
-export async function getHouses() {
-  return await db.property.findMany({
-    select: {
-      id: true,
-      title: true,
-      price: true,
-      bedrooms: true,
-      bathrooms: true,
-      location: true,
-      status: true,
-    },
-  });
+export async function getHouses(
+  filter: HouseFilter,
+  currentPage = 1,
+  pageSize = 9
+) {
+  try {
+    const {
+      houseType,
+      minPrice,
+      maxPrice,
+      bedrooms,
+      bathrooms,
+      hasInternalToilet,
+      hasWell,
+      hasParking,
+      purpose,
+      region,
+      division,
+      subdivision,
+      neighborhood,
+    } = filter;
+
+    let where: Prisma.PropertyWhereInput = {
+      ...(houseType && {
+        houseTypeId: { equals: houseType, mode: "insensitive" },
+      }),
+      ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
+      ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
+      ...(bedrooms && { bedrooms: { equals: parseInt(bedrooms) } }),
+      ...(bathrooms && { bathrooms: { equals: parseInt(bathrooms) } }),
+      ...(hasInternalToilet !== undefined && { hasInternalToilet }),
+      ...(hasWell !== undefined && { hasWell }),
+      ...(hasParking !== undefined && { hasParking }),
+      ...(purpose && { purpose: purpose as unknown as PropertyPurpose }),
+      ...(region && { regionId: region }),
+      ...(division && { divisionId: division }),
+      ...(subdivision && { subdivisionId: subdivision }),
+      ...(neighborhood && { neighborhoodId: neighborhood }),
+    };
+
+    const [count, houses] = await Promise.all([
+      db.property.count({ where: where }),
+      db.property.findMany({
+        where: where,
+        include: { images: true },
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip: (currentPage - 1) * pageSize,
+        take: pageSize,
+      }),
+    ]);
+
+    let totalPages = Math.ceil(count / pageSize);
+
+    return { houses, totalPages };
+  } catch (error) {
+    console.error("Error filtering houses:", error);
+    throw new Error("Failed to fetch filtered houses");
+  }
 }
 
 export async function getHouseTypes() {
@@ -31,7 +80,10 @@ export async function getRegions() {
 }
 
 export async function getDivisionsByRegionId(id: string) {
-  const result = await db.division.findMany({ where: { regionId: id } });
+  const result = await db.division.findMany({
+    where: { regionId: id },
+    select: { id: true, name: true },
+  });
   return result;
 }
 
@@ -50,7 +102,7 @@ export async function getNeighborhoodBySubdivisionId(id: string) {
 export async function getFilteredHouses(filters: HouseFilter) {
   try {
     const {
-      type,
+      houseType,
       minPrice,
       maxPrice,
       bedrooms,
@@ -58,8 +110,7 @@ export async function getFilteredHouses(filters: HouseFilter) {
       hasInternalToilet,
       hasWell,
       hasParking,
-      forRent,
-      forSale,
+      purpose,
       region,
       division,
       subdivision,
@@ -68,7 +119,9 @@ export async function getFilteredHouses(filters: HouseFilter) {
 
     const houses = await db.property.findMany({
       where: {
-        ...(type && { houseTypeId: { equals: type, mode: "insensitive" } }),
+        ...(houseType && {
+          houseTypeId: { equals: houseType, mode: "insensitive" },
+        }),
         ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
         ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
         ...(bedrooms && { bedrooms: { equals: parseInt(bedrooms) } }),
@@ -76,8 +129,7 @@ export async function getFilteredHouses(filters: HouseFilter) {
         ...(hasInternalToilet !== undefined && { hasInternalToilet }),
         ...(hasWell !== undefined && { hasWell }),
         ...(hasParking !== undefined && { hasParking }),
-        ...(forRent !== undefined && { forRent }),
-        ...(forSale !== undefined && { forSale }),
+        ...(purpose && { purpose: purpose as unknown as PropertyPurpose }),
         ...(region && { regionId: region }),
         ...(division && { divisionId: division }),
         ...(subdivision && { subdivisionId: subdivision }),

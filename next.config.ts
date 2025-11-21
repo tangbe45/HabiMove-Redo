@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
         port: "", // Optional: Specify if a custom port is used
         pathname: "/**", // Adjust the pathname pattern as needed
       },
+      {
+        protocol: "http", // or 'http'
+        hostname: "localhost", // Replace with the actual hostname of your image source
+        port: "3000", // Optional: Specify if a custom port is used
+        pathname: "/**", // Adjust the pathname pattern as needed
+      },
       // Add more patterns for other external image sources if needed
     ],
   },

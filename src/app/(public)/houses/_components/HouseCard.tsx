@@ -9,12 +9,19 @@ type HouseCardProps = {
     title: string;
     price: number;
     location: string;
-    bedrooms: number;
-    bathrooms: number;
+    bedrooms: number | null;
+    bathrooms: number | null;
+    images: {
+      url: string;
+      id: string;
+      createdAt: Date;
+      propertyId: string;
+    }[];
   };
 };
 
 export const HouseCard = ({ house }: HouseCardProps) => {
+  const url = house.images.length > 0 ? house.images[0].url : houseUrl;
   return (
     <article
       aria-labelledby={`house-${house.id}-title`}
@@ -24,8 +31,9 @@ export const HouseCard = ({ house }: HouseCardProps) => {
       <div className="relative w-full h-56 overflow-hidden">
         <div className="absolute inset-0 transform transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
           <Image
-            src={houseUrl}
+            src={url}
             alt={house.title}
+            priority
             fill
             sizes="(max-width: 640px) 100vw, 360px"
             className="object-cover w-full h-full"
@@ -78,6 +86,7 @@ export const HouseCard = ({ house }: HouseCardProps) => {
               <Image
                 src={avatarUrl}
                 alt={"Owner's Avatar"}
+                priority
                 width={36}
                 height={36}
                 className="object-cover"

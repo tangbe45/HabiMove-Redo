@@ -1,0 +1,52 @@
+import { z } from "zod";
+
+/* ---------- CREATE ---------- */
+export const propertyCreateSchema = z.object({
+  title: z
+    .string()
+    .min(
+      3,
+      "Invalid input: Title is required and must be more than 3 characters"
+    ),
+  description: z.string().optional(),
+  price: z.coerce
+    .number("Invalid input: Requires a positive number")
+    .positive(),
+  location: z.string().min(1, "Invalid input: Specific location is required"),
+  bedrooms: z.coerce.number().nonnegative(),
+  bathrooms: z.coerce.number().nonnegative(),
+  hasInternalToilet: z.coerce.boolean().optional(),
+  hasParking: z.coerce.boolean().optional(),
+  hasWell: z.coerce.boolean().optional(),
+  purpose: z.enum(["FOR_RENT", "FOR_SALE"]),
+  houseTypeId: z.string().cuid("Invalid input: Invalid type"), // z.cuid() isn't directly usable in client; validate on server
+  regionId: z.string().cuid("Invalid input: Invalid type"),
+  divisionId: z.string().cuid("Invalid input: Invalid type"),
+  subdivisionId: z.string().cuid("Invalid input: Invalid type"),
+  neighborhoodId: z.string().cuid("Invalid input: Invalid type"),
+});
+export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
+
+/* ---------- UPDATE ---------- */
+export const propertyUpdateSchema = propertyCreateSchema.partial().extend({
+  id: z.cuid(),
+});
+export type PropertyUpdateInput = z.infer<typeof propertyUpdateSchema>;
+
+/* ---------- FILTER ---------- */
+export const propertyFilterSchema = z.object({
+  purpose: z.enum(["FOR_RENT", "FOR_SALE"]).optional(),
+  status: z.enum(["AVAILABLE", "PENDING", "SOLD", "RENTED"]).optional(),
+  minPrice: z.number().optional(),
+  maxPrice: z.number().optional(),
+  bedrooms: z.number().int().optional(),
+  bathrooms: z.number().int().optional(),
+  regionId: z.cuid().optional(),
+  divisionId: z.cuid().optional(),
+  subdivisionId: z.cuid().optional(),
+  neighborhoodId: z.cuid().optional(),
+  houseTypeId: z.cuid().optional(),
+});
+export type PropertyFilterInput = z.infer<typeof propertyFilterSchema>;
+
+export type LoadSchema = { id: string; name: string };

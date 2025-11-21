@@ -17,21 +17,22 @@ datasource db {
 model Property {
   id          String        @id @default(cuid())
   title       String
-  description String
+  description String?
   price       Float
   location    String
-  bedrooms    Int
-  bathrooms   Int
-  hasInternalToilet Boolean
-  hasParking Boolean
-  hasWell Boolean
-  forRent Boolean
-  forSale Boolean
+  bedrooms    Int?
+  bathrooms   Int?
+  hasInternalToilet Boolean?
+  hasParking Boolean?
+  hasWell Boolean?
+  purpose PropertyPurpose @default(FOR_RENT)
   status      PropertyStatus @default(AVAILABLE)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
+  images         Media[] 
+
   regionId       String
   divisionId     String
   subdivisionId  String
@@ -52,12 +53,25 @@ enum PropertyStatus {
   SOLD
   RENTED
 }
+enum PropertyPurpose {
+  FOR_RENT
+  FOR_SALE
+}
 
 model HouseType {
   id      String    @id @default(cuid())
   name    String    @unique
   description String?
   Property Property[]
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  url       String
+  createdAt DateTime @default(now())
+
+  propertyId String
+  property  Property  @relation(fields: [propertyId], references: [id])
 }
 
 model Region {

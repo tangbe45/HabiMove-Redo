@@ -14,38 +14,35 @@ import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 
-type HeaderWithFilterButtonProps = {
-  title: string;
+type FilterButtonProps = {
   hasFilter?: boolean;
-  filters: HouseFilter;
-  isOpen: boolean;
-  houseTypes: HouseType[];
-  location: LocationData;
-  onOpen: () => void;
-  onClose: () => void;
-  onChange: (key: string, value: string | boolean) => void;
-  onApply: () => void;
+  filter?: HouseFilter;
+  isOpen?: boolean;
+  houseTypes?: HouseType[];
+  location?: LocationData;
+  onOpen?: () => void;
+  onClose?: () => void;
+  onChange?: (key: string, value: string | boolean) => void;
+  onApply?: () => void;
 };
 
-export const HeaderWithFilterButton = ({
-  title,
+export const FilterButton = ({
   houseTypes,
   location,
   isOpen,
-  filters,
+  filter,
   hasFilter = false,
   onOpen,
   onClose,
   onChange,
   onApply,
-}: HeaderWithFilterButtonProps) => {
+}: FilterButtonProps) => {
   return (
-    <div className="header p-sync z-50">
-      <h1 className="text-gray-300">{title}</h1>
+    <div className="fixed rounded-lg text-gray-200 bg-slate-800 top-14 right-8 z-20">
       {hasFilter && (
         <button
-          onClick={() => onOpen()}
-          className="btn btn-primary flex gap-x-2 rounded-3xl hover:bg-sky-500 px-4 py-1 items-center hover:text-gray-50 cursor-pointer"
+          onClick={onOpen && (() => onOpen())}
+          className="flex gap-x-1 rounded-3xl px-2 py-1 hover:bg-sky-500 items-center hover:text-gray-50 cursor-pointer"
         >
           <SlidersHorizontal height={20} width={20} /> Filter
         </button>
@@ -65,8 +62,10 @@ export const HeaderWithFilterButton = ({
                   <div>
                     <Label className="filter-label">House Type</Label>
                     <Select
-                      value={filters.type}
-                      onValueChange={(value) => onChange("type", value)}
+                      value={filter && filter.houseType}
+                      onValueChange={
+                        onChange && ((value) => onChange("houseType", value))
+                      }
                     >
                       <SelectTrigger size="sm" className="mt-1 max-w-48">
                         <SelectValue placeholder="Select house type" />
@@ -94,7 +93,10 @@ export const HeaderWithFilterButton = ({
                         style={{ height: "2rem" }}
                         type="number"
                         placeholder="e.g. 50000"
-                        onChange={(e) => onChange("minPrice", e.target.value)}
+                        onChange={
+                          onChange &&
+                          ((e) => onChange("minPrice", e.target.value))
+                        }
                       />
                     </div>
                     <div>
@@ -103,7 +105,10 @@ export const HeaderWithFilterButton = ({
                         style={{ height: "2rem" }}
                         type="number"
                         placeholder="e.g. 300000"
-                        onChange={(e) => onChange("maxPrice", e.target.value)}
+                        onChange={
+                          onChange &&
+                          ((e) => onChange("maxPrice", e.target.value))
+                        }
                       />
                     </div>
                   </div>
@@ -116,7 +121,10 @@ export const HeaderWithFilterButton = ({
                         style={{ height: "2rem" }}
                         type="number"
                         placeholder="e.g. 3"
-                        onChange={(e) => onChange("bedrooms", e.target.value)}
+                        onChange={
+                          onChange &&
+                          ((e) => onChange("bedrooms", e.target.value))
+                        }
                       />
                     </div>
                     <div>
@@ -125,7 +133,10 @@ export const HeaderWithFilterButton = ({
                         style={{ height: "2rem" }}
                         type="number"
                         placeholder="e.g. 2"
-                        onChange={(e) => onChange("bathrooms", e.target.value)}
+                        onChange={
+                          onChange &&
+                          ((e) => onChange("bathrooms", e.target.value))
+                        }
                       />
                     </div>
                   </div>
@@ -138,9 +149,10 @@ export const HeaderWithFilterButton = ({
                       </Label>
                       <Switch
                         id="internalToilet"
-                        checked={filters.hasInternalToilet}
-                        onCheckedChange={(val) =>
-                          onChange("hasInternalToilet", val)
+                        checked={filter && filter.hasInternalToilet}
+                        onCheckedChange={
+                          onChange &&
+                          ((val) => onChange("hasInternalToilet", val))
                         }
                       />
                     </div>
@@ -148,32 +160,40 @@ export const HeaderWithFilterButton = ({
                       <Label htmlFor="well">Has Well</Label>
                       <Switch
                         id="well"
-                        checked={filters.hasWell}
-                        onCheckedChange={(val) => onChange("hasWell", val)}
+                        checked={filter && filter.hasWell}
+                        onCheckedChange={
+                          onChange && ((val) => onChange("hasWell", val))
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="parking">Has Parking</Label>
                       <Switch
                         id="parking"
-                        checked={filters.hasParking}
-                        onCheckedChange={(val) => onChange("hasParking", val)}
+                        checked={filter && filter.hasParking}
+                        onCheckedChange={
+                          onChange && ((val) => onChange("hasParking", val))
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="forRent">For Rent</Label>
                       <Switch
                         id="forRent"
-                        checked={filters.forRent}
-                        onCheckedChange={(val) => onChange("forRent", val)}
+                        checked={filter && filter.forRent}
+                        onCheckedChange={
+                          onChange && ((val) => onChange("forRent", val))
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="forSale">For Sale</Label>
                       <Switch
                         id="forSale"
-                        checked={filters.forSale}
-                        onCheckedChange={(val) => onChange("forSale", val)}
+                        checked={filter && filter.forSale}
+                        onCheckedChange={
+                          onChange && ((val) => onChange("forSale", val))
+                        }
                       />
                     </div>
                   </div>
@@ -188,14 +208,17 @@ export const HeaderWithFilterButton = ({
                       <div>
                         <Label className="filter-label">Region</Label>
                         <Select
-                          value={filters.region}
-                          onValueChange={(value) => onChange("region", value)}
+                          value={filter && filter.region}
+                          onValueChange={
+                            onChange && ((value) => onChange("region", value))
+                          }
                         >
                           <SelectTrigger className="max-w-40" size="sm">
                             <SelectValue placeholder="Select region" />
                           </SelectTrigger>
                           <SelectContent>
-                            {location.regions &&
+                            {location &&
+                              location.regions &&
                               location.regions.map((item) => (
                                 <SelectItem
                                   className="truncate"
@@ -212,15 +235,18 @@ export const HeaderWithFilterButton = ({
                       <div>
                         <Label className="filter-label">Division</Label>
                         <Select
-                          value={filters.division}
-                          onValueChange={(value) => onChange("division", value)}
-                          disabled={location.divisions.length === 0}
+                          value={filter && filter.division}
+                          onValueChange={
+                            onChange && ((value) => onChange("division", value))
+                          }
+                          disabled={location && location.divisions.length === 0}
                         >
                           <SelectTrigger className="max-w-40" size="sm">
                             <SelectValue placeholder="Select division" />
                           </SelectTrigger>
                           <SelectContent>
-                            {location.divisions &&
+                            {location &&
+                              location.divisions &&
                               location.divisions.map((item) => (
                                 <SelectItem
                                   className="truncate"
@@ -237,17 +263,19 @@ export const HeaderWithFilterButton = ({
                       <div>
                         <Label className="filter-label">Subdivision</Label>
                         <Select
-                          disabled={!location.subdivisions}
-                          value={filters.subdivision}
-                          onValueChange={(value) =>
-                            onChange("subdivision", value)
+                          disabled={location && !location.subdivisions}
+                          value={filter && filter.subdivision}
+                          onValueChange={
+                            onChange &&
+                            ((value) => onChange("subdivision", value))
                           }
                         >
                           <SelectTrigger className="max-w-40" size="sm">
                             <SelectValue placeholder="Select subdivision" />
                           </SelectTrigger>
                           <SelectContent>
-                            {location.subdivisions &&
+                            {location &&
+                              location.subdivisions &&
                               location.subdivisions.map((item) => (
                                 <SelectItem
                                   className="truncate"
@@ -264,17 +292,19 @@ export const HeaderWithFilterButton = ({
                       <div>
                         <Label className="filter-label">Neighborhood</Label>
                         <Select
-                          disabled={!location.neighborhoods}
-                          value={filters.neighborhood}
-                          onValueChange={(value) =>
-                            onChange("neighborhood", value)
+                          disabled={location && !location.neighborhoods}
+                          value={filter && filter.neighborhood}
+                          onValueChange={
+                            onChange &&
+                            ((value) => onChange("neighborhood", value))
                           }
                         >
                           <SelectTrigger className="max-w-40" size="sm">
                             <SelectValue placeholder="Select neighborhood" />
                           </SelectTrigger>
                           <SelectContent>
-                            {location.neighborhoods &&
+                            {location &&
+                              location.neighborhoods &&
                               location.neighborhoods.map((item) => (
                                 <SelectItem
                                   className="truncate"
@@ -296,7 +326,7 @@ export const HeaderWithFilterButton = ({
                       onClick={onApply}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white"
                     >
-                      Apply Filters
+                      Apply Filter
                     </Button>
                     <Button
                       variant={"ghost"}

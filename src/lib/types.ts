@@ -1,3 +1,5 @@
+import { Prisma } from "@/generated/prisma";
+
 export type SetSidebarOpenProps = {
   setSidebarOpen: (open: boolean) => void;
 };
@@ -7,17 +9,32 @@ export type SidebarOpenProps = {
 
 export type SidebarProps = SetSidebarOpenProps & SidebarOpenProps;
 
+export const propertyDetailSelect = Prisma.validator<Prisma.PropertySelect>()({
+  id: true,
+  title: true,
+  houseType: true,
+  bedrooms: true,
+  bathrooms: true,
+  purpose: true,
+  price: true,
+  region: true,
+  division: true,
+  subdivision: true,
+  neighborhood: true,
+});
+
 export type HouseFilter = {
-  type?: string;
+  houseType?: string;
   minPrice?: string;
   maxPrice?: string;
   bedrooms?: string;
   bathrooms?: string;
   hasInternalToilet?: boolean;
   hasWell?: boolean;
-  hasParking?: boolean;
   forRent?: boolean;
   forSale?: boolean;
+  hasParking?: boolean;
+  purpose?: string;
   region?: string;
   division?: string;
   subdivision?: string;
@@ -53,13 +70,15 @@ export type Subdivision = { id: string | ""; name: string };
 export type Neighborhood = { id: string | ""; name: string };
 export type Price = { id: string | ""; name: string };
 
-export type FilterBarProps = {
-  onApply: (filter: Filters) => void;
-};
-
 export type LocationData = {
   regions: Region[] | "";
   divisions: Division[] | "";
   subdivisions: Subdivision[] | "";
   neighborhoods: Neighborhood[] | "";
+};
+
+export type ActionResult = {
+  success: boolean;
+  errors: Record<string, string[]> | null;
+  message: string | null;
 };

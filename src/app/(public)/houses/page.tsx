@@ -1,10 +1,9 @@
 "use client";
 
-import { HeaderWithFilterButton } from "@/components/header/HeaderWithFilterButton";
+import { FilterButton } from "@/components/header/FilterButton";
 import { HouseCard } from "./_components/HouseCard";
 import {
   getDivisionsByRegionId,
-  getFilteredHouses,
   getHouses,
   getHouseTypes,
   getNeighborhoodBySubdivisionId,
@@ -14,27 +13,35 @@ import {
 import { useEffect, useState } from "react";
 import { CustomSpinner } from "@/components/custom_spinner/CustomSpinner";
 import { HouseFilter, HouseType, LocationData } from "@/lib/types";
+import { HousesPagination } from "./_components/HousesPagination";
+import { set } from "zod";
 
 type House = {
   id: string;
   title: string;
   price: number;
   location: string;
-  bedrooms: number;
-  bathrooms: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  images: {
+    url: string;
+    id: string;
+    createdAt: Date;
+    propertyId: string;
+  }[];
 };
 
 const initialFilter = {
-  type: "",
+  houseType: "",
   minPrice: "",
   maxPrice: "",
   bedrooms: "",
   bathrooms: "",
-  hasInternalToilet: false,
-  hasWell: false,
-  hasParking: false,
-  forRent: false,
-  forSale: false,
+  hasInternalToilet: undefined,
+  hasWell: undefined,
+  hasParking: undefined,
+  forRent: undefined,
+  forSale: undefined,
   region: "",
   division: "",
   subdivision: "",
@@ -46,7 +53,9 @@ const HousesPage = () => {
   const [houses, setHouses] = useState<House[]>([]);
   const [houseTypes, setHouseTypes] = useState<HouseType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState<HouseFilter>(initialFilter);
+  const [filter, setFilter] = useState<HouseFilter>(initialFilter);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [location, setLocation] = useState<LocationData>({
     regions: "",
     divisions: "",
@@ -56,12 +65,13 @@ const HousesPage = () => {
   useEffect(() => {
     async function fetchHouses() {
       setIsLoading(true);
-      const data = await getFilteredHouses(filters);
-      setHouses(data);
+      const data = await getHouses(filter, currentPage);
+      setHouses(data.houses);
+      setTotalPages(data.totalPages);
       setIsLoading(false);
     }
     fetchHouses();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     async function loadFilters() {
@@ -89,7 +99,7 @@ const HousesPage = () => {
   };
 
   const handleChange = async (key: string, value: string | boolean) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setFilter((prev) => ({ ...prev, [key]: value }));
     if (key === "region" && typeof value === "string") {
       const result = await getDivisionsByRegionId(value);
       setLocation(() => ({ ...location, divisions: result }));
@@ -109,16 +119,20 @@ const HousesPage = () => {
     }
   };
 
-  const handleApplyFilters = () => {
-    console.log("Applying filters:", filters);
+  const handleApplyFilters = async () => {
+    const result = await getHouses(filter, 1);
+    setHouses(result.houses);
+    setTotalPages(result.totalPages);
+    setCurrentPage(1);
     setIsOpen(false);
     // Trigger your filtering logic or callback here
   };
 
+  console.log("refresh");
   return (
-    <div className="page">
-      <div className="px-1">
-        <HeaderWithFilterButton
+    <div className="px-1 sm:px-8 pb-4 min-h-screen">
+      <div className="">
+        <FilterButton
           isOpen={isOpen}
           onOpen={handleModalOpen}
           onClose={handleModalClose}
@@ -126,8 +140,7 @@ const HousesPage = () => {
           onApply={handleApplyFilters}
           houseTypes={houseTypes}
           location={location}
-          title="Houses"
-          filters={filters}
+          filter={filter}
           hasFilter={true}
         />
       </div>
@@ -138,7 +151,7 @@ const HousesPage = () => {
       ) : (
         <>
           {houses.length > 0 ? (
-            <div className="p-sync pt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 ">
+            <div className="pt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 ">
               {houses.map((house) => (
                 <HouseCard key={house.id} house={house} />
               ))}
@@ -148,6 +161,11 @@ const HousesPage = () => {
               <h3 className="text-white">No houses in the database yet</h3>
             </div>
           )}
+          <HousesPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </>
       )}
     </div>
