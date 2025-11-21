@@ -50,3 +50,37 @@ export const propertyFilterSchema = z.object({
 export type PropertyFilterInput = z.infer<typeof propertyFilterSchema>;
 
 export type LoadSchema = { id: string; name: string };
+
+export type PropertyDetails = {
+  id: string;
+  title: string;
+  description?: string;
+  location: string;
+
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+
+  // Location
+  region: string;
+  division: string;
+  subdivision: string;
+  neighborhood: string;
+
+  // Type
+  houseType: string;
+
+  // Images
+  images: string[];
+
+  // Amenities
+  hasInternalToilet?: boolean;
+  hasWell?: boolean;
+  //hasBorehole?: boolean;
+  hasParking?: boolean;
+  //hasFence?: boolean;
+  //hasBalcony?: boolean;
+
+  createdAt: string;
+  updatedAt: string;
+};

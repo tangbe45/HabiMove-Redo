@@ -2,6 +2,7 @@
 
 import { Prisma, PropertyPurpose } from "@/generated/prisma";
 import { db } from "@/lib/db";
+import { PropertyDetails } from "@/lib/db/types/property.types";
 import { HouseFilter } from "@/lib/types";
 
 export async function getHouses(
@@ -66,6 +67,47 @@ export async function getHouses(
   }
 }
 
+export async function getHouseById(
+  id: string
+): Promise<PropertyDetails | null> {
+  const result = await db.property.findUnique({
+    where: { id },
+    include: {
+      region: true,
+      division: true,
+      subdivision: true,
+      neighborhood: true,
+      houseType: true,
+      images: true,
+    },
+  });
+  if (!result) {
+    return null;
+  }
+
+  const house = {
+    id: result.id,
+    title: result.title,
+    description: result.description || undefined,
+    location: result.location,
+    price: result.price,
+    bedrooms: result.bedrooms,
+    bathrooms: result.bathrooms,
+    region: result.region.name,
+    division: result.division.name,
+    subdivision: result.subdivision.name,
+    neighborhood: result.neighborhood.name,
+    houseType: result.houseType.name,
+    images: result.images ? result.images.map((image) => image.url) : [],
+    hasInternalToilet: result.hasInternalToilet ?? undefined,
+    hasWell: result.hasWell ?? undefined,
+    hasParking: result.hasParking ?? undefined,
+    createdAt: result.createdAt.toString(),
+    updatedAt: result.updatedAt.toString(),
+  };
+  return house;
+}
+
 export async function getHouseTypes() {
   const result = await db.houseType.findMany({
     select: { id: true, name: true },
@@ -99,50 +141,50 @@ export async function getNeighborhoodBySubdivisionId(id: string) {
   return result;
 }
 
-export async function getFilteredHouses(filters: HouseFilter) {
-  try {
-    const {
-      houseType,
-      minPrice,
-      maxPrice,
-      bedrooms,
-      bathrooms,
-      hasInternalToilet,
-      hasWell,
-      hasParking,
-      purpose,
-      region,
-      division,
-      subdivision,
-      neighborhood,
-    } = filters;
+// export async function getFilteredHouses(filters: HouseFilter) {
+//   try {
+//     const {
+//       houseType,
+//       minPrice,
+//       maxPrice,
+//       bedrooms,
+//       bathrooms,
+//       hasInternalToilet,
+//       hasWell,
+//       hasParking,
+//       purpose,
+//       region,
+//       division,
+//       subdivision,
+//       neighborhood,
+//     } = filters;
 
-    const houses = await db.property.findMany({
-      where: {
-        ...(houseType && {
-          houseTypeId: { equals: houseType, mode: "insensitive" },
-        }),
-        ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
-        ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
-        ...(bedrooms && { bedrooms: { equals: parseInt(bedrooms) } }),
-        ...(bathrooms && { bathrooms: { equals: parseInt(bathrooms) } }),
-        ...(hasInternalToilet !== undefined && { hasInternalToilet }),
-        ...(hasWell !== undefined && { hasWell }),
-        ...(hasParking !== undefined && { hasParking }),
-        ...(purpose && { purpose: purpose as unknown as PropertyPurpose }),
-        ...(region && { regionId: region }),
-        ...(division && { divisionId: division }),
-        ...(subdivision && { subdivisionId: subdivision }),
-        ...(neighborhood && { neighborhoodId: neighborhood }),
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+//     const houses = await db.property.findMany({
+//       where: {
+//         ...(houseType && {
+//           houseTypeId: { equals: houseType, mode: "insensitive" },
+//         }),
+//         ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
+//         ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
+//         ...(bedrooms && { bedrooms: { equals: parseInt(bedrooms) } }),
+//         ...(bathrooms && { bathrooms: { equals: parseInt(bathrooms) } }),
+//         ...(hasInternalToilet !== undefined && { hasInternalToilet }),
+//         ...(hasWell !== undefined && { hasWell }),
+//         ...(hasParking !== undefined && { hasParking }),
+//         ...(purpose && { purpose: purpose as unknown as PropertyPurpose }),
+//         ...(region && { regionId: region }),
+//         ...(division && { divisionId: division }),
+//         ...(subdivision && { subdivisionId: subdivision }),
+//         ...(neighborhood && { neighborhoodId: neighborhood }),
+//       },
+//       orderBy: {
+//         createdAt: "desc",
+//       },
+//     });
 
-    return houses;
-  } catch (error) {
-    console.error("Error filtering houses:", error);
-    throw new Error("Failed to fetch filtered houses");
-  }
-}
+//     return houses;
+//   } catch (error) {
+//     console.error("Error filtering houses:", error);
+//     throw new Error("Failed to fetch filtered houses");
+//   }
+// }
