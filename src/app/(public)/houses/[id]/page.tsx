@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import avatar from "../../../../../public/avatar/avatar.jpg";
 import { getHouseById } from "../actions";
+import Link from "next/link";
 
 // Simulated session and data (replace with real data or server fetch)
 const isLoggedIn = true; // Replace with your auth state
@@ -133,6 +134,9 @@ export default async function HouseDetailsPage({
             </Card>
           )}
         </div>
+        <Link href="/houses" className="text-gray-300">
+          Back to House List
+        </Link>
       </div>
     </div>
   );

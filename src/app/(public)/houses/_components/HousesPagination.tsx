@@ -18,18 +18,13 @@ export function HousesPagination({
   onPageChange: (page: number) => void;
 }) {
   const pageNumbers = getPageNumbers(currentPage, totalPages);
-  console.log(pageNumbers);
   return (
     <Pagination className="bg-slate-800 text-white w-full flex justify-center mt-4 rounded-md">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
             className="cursor-pointer"
-            onClick={() =>
-              currentPage !== 1 &&
-              currentPage !== totalPages &&
-              onPageChange(currentPage - 1)
-            }
+            onClick={() => currentPage !== 1 && onPageChange(currentPage - 1)}
             aria-disabled={currentPage === 1}
           />
         </PaginationItem>
@@ -53,7 +48,9 @@ export function HousesPagination({
         <PaginationItem>
           <PaginationNext
             className="cursor-pointer"
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() =>
+              currentPage === totalPages || onPageChange(currentPage + 1)
+            }
             aria-disabled={currentPage === totalPages}
           />
         </PaginationItem>
