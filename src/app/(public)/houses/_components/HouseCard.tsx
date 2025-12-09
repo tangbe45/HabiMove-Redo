@@ -1,3 +1,27 @@
+// export default function HouseCard({ house }: { house: any }) {
+//   return (
+//     <article className="border rounded shadow-sm overflow-hidden">
+//       <div className="h-44 bg-gray-100">
+//         <img
+//           src={house.images?.[0]?.url || "/placeholder.png"}
+//           alt={house.title}
+//           className="w-full h-full object-cover"
+//         />
+//       </div>
+//       <div className="p-3 bg-slate-950">
+//         <h3 className="font-semibold text-slate-100">{house.title}</h3>
+//         <p className="text-sm text-gray-600 line-clamp-2">
+//           {house.description}
+//         </p>
+//         <div className="flex items-center justify-between mt-3">
+//           <div className="text-sm text-gray-500">{house.purpose}</div>
+//           <div className="font-bold">{house.price} XAF</div>
+//         </div>
+//       </div>
+//     </article>
+//   );
+// }
+
 import Image from "next/image";
 import { HeartIcon, ChartNetworkIcon } from "lucide-react";
 import houseUrl from "../../../../../public/house/house.jpg";
@@ -26,7 +50,7 @@ export const HouseCard = ({ house }: HouseCardProps) => {
   return (
     <article
       aria-labelledby={`house-${house.id}-title`}
-      className="group card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+      className="group card bg-slate-950 text-slate-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
     >
       <Link href={`/houses/${house.id}`} className="block">
         {/* Thumbnail */}
@@ -74,7 +98,7 @@ export const HouseCard = ({ house }: HouseCardProps) => {
               <p className="mt-1 text-sm text-slate-600 truncate">
                 {house.location}
               </p>
-              <p className="mt-2 text-sm font-medium text-emerald-600">
+              <p className="mt-2 text-lg font-extrabold text-red-600">
                 {formatPrice(house.price)}
               </p>
               <div className="mt-2 text-xs text-slate-500 flex gap-3">

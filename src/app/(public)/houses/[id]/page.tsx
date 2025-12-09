@@ -1,5 +1,11 @@
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,12 +38,12 @@ export default async function HouseDetailsPage({
   }
 
   return (
-    <div className="w-full mx-auto p-6 space-y-8 overflow-auto h-[calc(100vh-48px)]">
+    <div className="w-full mx-auto mt-14 space-y-8 pb-4 min-h-screen">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* --- Header --- */}
         <div className="space-y-2 mb-6">
           <h1 className="text-2xl font-bold tracking-tight">{house.title}</h1>
-          <div className="flex items-center text-muted-foreground text-sm">
+          <div className="flex items-center text-slate-200 text-sm">
             <MapPin className="w-4 h-4 mr-1" />
             {house.location}
           </div>
@@ -63,18 +69,18 @@ export default async function HouseDetailsPage({
         {/* --- Details Grid --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* --- Left: House Details --- */}
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 flex border-none shadow-lg shadow-slate-800 bg-slate-950 text-slate-200">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>House Details</span>
-                <span className="text-xl font-bold text-primary">
-                  {house.price}
+                <span className="text-xl font-bold text-red-600">
+                  {house.price} CFA
                 </span>
               </CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between text-muted-foreground text-sm">
+            <CardContent className="space-y-4 flex-1">
+              <div className="flex items-center justify-between  text-slate-300 text-sm">
                 <span className="flex items-center gap-1">
                   <BedDouble className="w-4 h-4" />
                   {house.bedrooms} Bedrooms
@@ -94,16 +100,20 @@ export default async function HouseDetailsPage({
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {house.description}
               </p>
-
-              <Button className="w-full mt-2" size="lg">
-                Book a Visit
-              </Button>
             </CardContent>
+            <CardFooter className="flex justify-end">
+              <Link
+                href="/houses"
+                className="text-gray-300 px-6 py-2 rounded-lg bg-indigo-600"
+              >
+                Back to House List
+              </Link>
+            </CardFooter>
           </Card>
 
           {/* --- Right: Agent Details (conditional) --- */}
           {isLoggedIn && (
-            <Card className="lg:col-span-1">
+            <Card className="lg:col-span-1 bg-slate-950 text-slate-200 border-none shadow-lg shadow-slate-800">
               <CardHeader>
                 <CardTitle>Agent Details</CardTitle>
               </CardHeader>
@@ -134,9 +144,6 @@ export default async function HouseDetailsPage({
             </Card>
           )}
         </div>
-        <Link href="/houses" className="text-gray-300">
-          Back to House List
-        </Link>
       </div>
     </div>
   );

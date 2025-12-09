@@ -18,11 +18,11 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed left-0 right-0 top-0 px-4 sm:px-8 mx-auto w-full bg-slate-800 text-gray-400 dark:border-gray-700 md:z-50 z-40">
+    <nav className="fixed left-0 right-0 top-0 px-4 sm:px-8 mx-auto w-full bg-slate-950 text-gray-400 dark:border-gray-700 md:z-50 z-40">
       <div className="max-w-7xl mx-auto p-sync">
         <div className="flex justify-between h-12 items-center">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-indigo-600">
+          <Link href="/" className="text-xl font-semibold text-indigo-600">
             HabiMove
           </Link>
 

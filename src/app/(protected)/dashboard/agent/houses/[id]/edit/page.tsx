@@ -5,13 +5,12 @@ import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { compressImage } from "@/lib/image/compressImage";
-
-import { toastError, toastSuccess } from "@/lib/notification/toast";
 import {
-  HouseCreateInput,
-  houseCreateSchema,
   LoadSchema,
-} from "@/lib/validation/zod-schemas";
+  PropertyCreateInput,
+  propertyCreateSchema,
+} from "@/lib/db/types/property.types";
+import { toastError, toastSuccess } from "@/lib/toast";
 
 // ---- styles used to match shadcn SelectTrigger / input look ----
 const sharedInputClasses = `
@@ -34,9 +33,12 @@ const sharedInputClasses = `
 // ---- main component ----
 export default function AddHouseForm() {
   const { register, handleSubmit, formState, reset, setValue, watch } =
-    useForm<HouseCreateInput>({
-      resolver: zodResolver(houseCreateSchema) as Resolver<HouseCreateInput>,
+    useForm<PropertyCreateInput>({
+      resolver: zodResolver(
+        propertyCreateSchema
+      ) as Resolver<PropertyCreateInput>,
       defaultValues: {
+        id: "",
         title: "",
         description: "",
         price: undefined as unknown as number,
@@ -189,7 +191,7 @@ export default function AddHouseForm() {
   }
 
   // submit handler
-  async function onSubmit(data: HouseCreateInput) {
+  async function onSubmit(data: PropertyCreateInput) {
     try {
       // compress selected images
       const compressedFiles: File[] = [];
@@ -243,8 +245,9 @@ export default function AddHouseForm() {
 
   return (
     <div className="max-w-3xl mx-auto px-2 pt-16 space-y-6 overflow-x-hidden">
-      <h1 className="text-2xl font-bold">Add Property</h1>
+      <h1 className="text-2xl font-bold">Edit Property</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl space-y-6">
+        <input type="text" {...register("id")} hidden />
         {/* Purpose (radio buttons) */}
         <div>
           <span className="block text-gray-300 text-sm font-medium">

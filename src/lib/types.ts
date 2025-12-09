@@ -24,6 +24,7 @@ export const propertyDetailSelect = Prisma.validator<Prisma.PropertySelect>()({
 });
 
 export type HouseFilter = {
+  search?: string;
   houseType?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -34,6 +35,8 @@ export type HouseFilter = {
   forRent?: boolean;
   forSale?: boolean;
   hasParking?: boolean;
+  hasFence?: boolean;
+  hasBalcony?: boolean;
   purpose?: string;
   region?: string;
   division?: string;

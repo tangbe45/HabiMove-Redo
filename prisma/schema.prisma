@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Property {
+model House {
   id          String        @id @default(cuid())
   title       String
   description String?
@@ -25,8 +25,10 @@ model Property {
   hasInternalToilet Boolean
   hasParking Boolean
   hasWell Boolean
-  purpose PropertyPurpose @default(FOR_RENT)
-  status      PropertyStatus @default(AVAILABLE)
+  hasFence Boolean
+  hasBalcony Boolean
+  purpose HousePurpose @default(FOR_RENT)
+  status      HouseStatus @default(AVAILABLE)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -47,13 +49,13 @@ model Property {
   houseType    HouseType    @relation(fields: [houseTypeId], references: [id])
   
 }
-enum PropertyStatus {
+enum HouseStatus {
   AVAILABLE
   PENDING
   SOLD
   RENTED
 }
-enum PropertyPurpose {
+enum HousePurpose {
   FOR_RENT
   FOR_SALE
 }
@@ -62,7 +64,7 @@ model HouseType {
   id      String    @id @default(cuid())
   name    String    @unique
   description String?
-  Property Property[]
+  Property House[]
 }
 
 model Media {
@@ -71,14 +73,14 @@ model Media {
   createdAt DateTime @default(now())
 
   propertyId String
-  property  Property  @relation(fields: [propertyId], references: [id])
+  property  House  @relation(fields: [propertyId], references: [id])
 }
 
 model Region {
   id        String     @id @default(cuid())
   name      String     @unique
   divisions Division[]
-  Property   Property[]
+  Property   House[]
 }
 
 model Division {
@@ -87,7 +89,7 @@ model Division {
   regionId     String
   region       Region        @relation(fields: [regionId], references: [id])
   subdivisions Subdivision[]
-  Property      Property[]
+  Property      House[]
 }
 
 model Subdivision {
@@ -96,7 +98,7 @@ model Subdivision {
   divisionId    String
   division      Division       @relation(fields: [divisionId], references: [id])
   neighborhoods Neighborhood[]
-  Property       Property[]
+  Property       House[]
 }
 
 model Neighborhood {
@@ -104,5 +106,5 @@ model Neighborhood {
   name          String
   subdivisionId String
   subdivision   Subdivision @relation(fields: [subdivisionId], references: [id])
-  Property       Property[]
+  Property       House[]
 }

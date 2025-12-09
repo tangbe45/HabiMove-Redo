@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackClientApp } from "../stack/client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
@@ -27,12 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-full px-2  bg-slate-950`}
-      >
-        <Navbar />
-        {children}
-        <Toaster richColors position="top-right" />
-      </body>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900`}
+      ><StackProvider app={stackClientApp}><StackTheme>
+        <main className="max-w-7xl mx-auto w-full px-4 md:px-6 lg:px-8">
+          <Navbar />
+          {children}
+          <Toaster richColors position="top-right" />
+        </main>
+      </StackTheme></StackProvider></body>
     </html>
   );
 }

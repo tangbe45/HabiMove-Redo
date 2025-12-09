@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* ---------- CREATE ---------- */
-export const propertyCreateSchema = z.object({
+export const houseCreateSchema = z.object({
   title: z
     .string()
     .min(
@@ -18,6 +18,8 @@ export const propertyCreateSchema = z.object({
   hasInternalToilet: z.coerce.boolean().optional(),
   hasParking: z.coerce.boolean().optional(),
   hasWell: z.coerce.boolean().optional(),
+  hasFence: z.coerce.boolean().optional(),
+  hasBalcony: z.coerce.boolean().optional(),
   purpose: z.enum(["FOR_RENT", "FOR_SALE"]),
   houseTypeId: z.string().cuid("Invalid input: Invalid type"), // z.cuid() isn't directly usable in client; validate on server
   regionId: z.string().cuid("Invalid input: Invalid type"),
@@ -25,16 +27,17 @@ export const propertyCreateSchema = z.object({
   subdivisionId: z.string().cuid("Invalid input: Invalid type"),
   neighborhoodId: z.string().cuid("Invalid input: Invalid type"),
 });
-export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
+
+export type HouseCreateInput = z.infer<typeof houseCreateSchema>;
 
 /* ---------- UPDATE ---------- */
-export const propertyUpdateSchema = propertyCreateSchema.partial().extend({
+export const houseUpdateSchema = houseCreateSchema.partial().extend({
   id: z.cuid(),
 });
-export type PropertyUpdateInput = z.infer<typeof propertyUpdateSchema>;
+export type PropertyUpdateInput = z.infer<typeof houseUpdateSchema>;
 
 /* ---------- FILTER ---------- */
-export const propertyFilterSchema = z.object({
+export const houseFilterSchema = z.object({
   purpose: z.enum(["FOR_RENT", "FOR_SALE"]).optional(),
   status: z.enum(["AVAILABLE", "PENDING", "SOLD", "RENTED"]).optional(),
   minPrice: z.number().optional(),
@@ -47,11 +50,30 @@ export const propertyFilterSchema = z.object({
   neighborhoodId: z.cuid().optional(),
   houseTypeId: z.cuid().optional(),
 });
-export type PropertyFilterInput = z.infer<typeof propertyFilterSchema>;
+export type HouseFilterInput = z.infer<typeof houseFilterSchema>;
+
+export const initializeHouseFilter = {
+  houseType: "",
+  minPrice: "",
+  maxPrice: "",
+  bedrooms: "",
+  bathrooms: "",
+  hasInternalToilet: false,
+  hasWell: false,
+  hasParking: false,
+  hasFence: false,
+  hasBalcony: false,
+  forRent: undefined,
+  forSale: undefined,
+  region: "",
+  division: "",
+  subdivision: "",
+  neighborhood: "",
+};
 
 export type LoadSchema = { id: string; name: string };
 
-export type PropertyDetails = {
+export type HouseDetails = {
   id: string;
   title: string;
   description?: string;
@@ -76,10 +98,9 @@ export type PropertyDetails = {
   // Amenities
   hasInternalToilet?: boolean;
   hasWell?: boolean;
-  //hasBorehole?: boolean;
   hasParking?: boolean;
-  //hasFence?: boolean;
-  //hasBalcony?: boolean;
+  hasFence?: boolean;
+  hasBalcony?: boolean;
 
   createdAt: string;
   updatedAt: string;

@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { buttonVariants } from "@/components/ui/button";
 
 const WelcomeCard = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-2 md:p-6">
+    <div className="min-h-screen flex w-full items-center justify-center p-2 md:p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-xl text-center bg-slate-900 p-6 md:p-10 rounded-2xl mx-auto shadow-lg"
+        className="max-w-xl text-center bg-slate-950 p-6 md:p-10 rounded-2xl mx-auto shadow-lg"
       >
         <h1 className="md:text-3xl font-bold mb-4">
           Find Your Next Home With Ease
@@ -24,15 +25,12 @@ const WelcomeCard = () => {
         <div className="flex items-center justify-center gap-4">
           <Link
             href="/houses"
-            className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition"
+            className={buttonVariants({ variant: "secondary" })}
           >
             Get Started
           </Link>
 
-          <Link
-            href="/login"
-            className="px-6 py-3 rounded-xl border border-gray-300 text-gray-400 font-semibold hover:bg-gray-100 transition"
-          >
+          <Link href="/login" className={buttonVariants()}>
             Login
           </Link>
         </div>

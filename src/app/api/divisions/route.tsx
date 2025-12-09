@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from "@/lib/data/db";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);

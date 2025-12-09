@@ -1,9 +1,9 @@
 "use server";
 
-import { Prisma, PropertyPurpose } from "@/generated/prisma";
-import { db } from "@/lib/db";
-import { PropertyDetails } from "@/lib/db/types/property.types";
+import { HousePurpose, Prisma } from "@/generated/prisma";
+import { db } from "@/lib/data/db";
 import { HouseFilter } from "@/lib/types";
+import { HouseDetails } from "@/lib/validation/zod-schemas";
 
 export async function getHouses(
   filter: HouseFilter,
@@ -27,7 +27,7 @@ export async function getHouses(
       neighborhood,
     } = filter;
 
-    let where: Prisma.PropertyWhereInput = {
+    let where: Prisma.HouseWhereInput = {
       ...(houseType && {
         houseTypeId: { equals: houseType, mode: "insensitive" },
       }),
@@ -38,7 +38,7 @@ export async function getHouses(
       ...(hasInternalToilet !== undefined && { hasInternalToilet }),
       ...(hasWell !== undefined && { hasWell }),
       ...(hasParking !== undefined && { hasParking }),
-      ...(purpose && { purpose: purpose as unknown as PropertyPurpose }),
+      ...(purpose && { purpose: purpose as unknown as HousePurpose }),
       ...(region && { regionId: region }),
       ...(division && { divisionId: division }),
       ...(subdivision && { subdivisionId: subdivision }),
@@ -46,8 +46,8 @@ export async function getHouses(
     };
 
     const [count, houses] = await Promise.all([
-      db.property.count({ where: where }),
-      db.property.findMany({
+      db.house.count({ where: where }),
+      db.house.findMany({
         where: where,
         include: { images: true },
         orderBy: {
@@ -67,10 +67,8 @@ export async function getHouses(
   }
 }
 
-export async function getHouseById(
-  id: string
-): Promise<PropertyDetails | null> {
-  const result = await db.property.findUnique({
+export async function getHouseById(id: string): Promise<HouseDetails | null> {
+  const result = await db.house.findUnique({
     where: { id },
     include: {
       region: true,
@@ -102,6 +100,8 @@ export async function getHouseById(
     hasInternalToilet: result.hasInternalToilet ?? undefined,
     hasWell: result.hasWell ?? undefined,
     hasParking: result.hasParking ?? undefined,
+    hasFence: result.hasFence ?? undefined,
+    hasBalcony: result.hasBalcony ?? undefined,
     createdAt: result.createdAt.toString(),
     updatedAt: result.updatedAt.toString(),
   };
@@ -113,6 +113,7 @@ export async function getHouseTypes() {
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
+
   return result;
 }
 

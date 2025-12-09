@@ -19,7 +19,7 @@ export function HousesPagination({
 }) {
   const pageNumbers = getPageNumbers(currentPage, totalPages);
   return (
-    <Pagination className="bg-slate-800 text-white w-full flex justify-center mt-4 rounded-md">
+    <Pagination className="bg-slate-950 text-white w-full flex justify-center mt-4 rounded-md">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
